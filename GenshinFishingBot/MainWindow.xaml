@@ -1,0 +1,63 @@
+﻿<Window x:Class="GenshinFishingBot.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GenshinFishingBot"
+        mc:Ignorable="d"
+        Loaded="Win_Loaded"
+        Title="Genshin Fishing Bot" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Image Name="img" />
+        <Image Name="img2" Grid.Row="1"/>
+        <Grid Grid.Row="2">
+            <Grid.Resources>
+                <Style TargetType="DockPanel">
+                    <Setter Property="Margin">
+                        <Setter.Value>
+                            5
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Width">
+                        <Setter.Value>
+                            55
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Grid.Resources>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <DockPanel Grid.Column="0" Grid.Row="0">
+                <TextBlock Text="X:"/>
+                <TextBox Text="{Binding X}"/>
+            </DockPanel>
+            <DockPanel Grid.Column="1" Grid.Row="0">
+                <TextBlock Text="Y:"/>
+                <TextBox Text="{Binding Y}"/>
+            </DockPanel>
+
+            <DockPanel Grid.Column="0" Grid.Row="1">
+                <TextBlock Text="Width:"/>
+                <TextBox Text="{Binding Width}"/>
+            </DockPanel>
+            <DockPanel Grid.Column="1" Grid.Row="1">
+                <TextBlock Text="Height:"/>
+                <TextBox Text="{Binding Height}"/>
+            </DockPanel>
+        </Grid>
+    </Grid>
+</Window>
