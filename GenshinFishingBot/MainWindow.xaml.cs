@@ -17,12 +17,14 @@ namespace GenshinFishingBot
     {
         private static string PATH = "pos.json";
 
+        bool _isDown;
         ValuesViewModel _values;
         Direct3DCapture _cap;
         InputSimulator _is;
 
         public MainWindow()
         {
+            _isDown = false;
             if (File.Exists(PATH))
                 _values = JsonConvert.DeserializeObject<ValuesViewModel>(File.ReadAllText(PATH));
             else
@@ -97,9 +99,15 @@ namespace GenshinFishingBot
             if (cursor < (arrowStart + arrowEnd) / 2 &&
                 cursor > 0 &&
                 arrowEnd > 0)
+            {
                 _is.Mouse.LeftButtonDown();
-            else if (_is.InputDeviceState.IsHardwareKeyDown(WindowsInput.Native.VirtualKeyCode.LBUTTON))
+                _isDown = true;
+            }
+            else if (_isDown)
+            {
                 _is.Mouse.LeftButtonUp();
+                _isDown = false;
+            }
         }
 
         private void Win_Loaded(object sender, RoutedEventArgs e)
