@@ -24,7 +24,6 @@ namespace GenshinFishingBot
 
         public MainWindow()
         {
-            _isDown = false;
             if (File.Exists(PATH))
                 _values = JsonConvert.DeserializeObject<ValuesViewModel>(File.ReadAllText(PATH));
             else
@@ -96,14 +95,16 @@ namespace GenshinFishingBot
             }
             catch (Exception) { }
 
-            if (cursor < (arrowStart + arrowEnd) / 2 &&
-                cursor > 0 &&
-                arrowEnd > 0)
+            var mid = (arrowStart + arrowEnd) / 2;
+            if (cursor < mid)
             {
-                _is.Mouse.LeftButtonDown();
-                _isDown = true;
+                if(cursor > 0 && arrowEnd > 0)
+                {
+                    _is.Mouse.LeftButtonDown();
+                    _isDown = true;
+                }
             }
-            else if (_isDown)
+            else if (_isDown && arrowEnd > 0)
             {
                 _is.Mouse.LeftButtonUp();
                 _isDown = false;
