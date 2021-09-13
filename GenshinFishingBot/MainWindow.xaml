@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:GenshinFishingBot"
         mc:Ignorable="d"
         Loaded="Win_Loaded"
-        Title="Genshin Fishing Bot" Height="450" Width="800">
+        Title="Genshin Fishing Bot" Height="250" Width="1200">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
