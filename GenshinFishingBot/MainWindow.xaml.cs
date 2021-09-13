@@ -97,7 +97,9 @@ namespace GenshinFishingBot
             if (cursor < (arrowStart + arrowEnd) / 2 &&
                 cursor > 0 &&
                 arrowEnd > 0)
-                _is.Mouse.LeftButtonClick();
+                _is.Mouse.LeftButtonDown();
+            else if (_is.InputDeviceState.IsHardwareKeyDown(WindowsInput.Native.VirtualKeyCode.LBUTTON))
+                _is.Mouse.LeftButtonUp();
         }
 
         private void Win_Loaded(object sender, RoutedEventArgs e)
