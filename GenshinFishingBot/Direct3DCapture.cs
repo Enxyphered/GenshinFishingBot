@@ -8,13 +8,14 @@ using MapFlags = SharpDX.Direct3D11.MapFlags;
 
 namespace GenshinFishingBot
 {
-    public delegate void ScreenCaptured(Span<byte> buffer);
     public class Direct3DCapture
     {
         private Device _device;
+        private Adapter1 _adapter;
         private Texture2DDescription _textureDescription;
         private OutputDescription _outputDescription;
         private OutputDuplication _output;
+        private Output1 _output1;
         private Texture2D _outputImg = null;
 
         public int Width
@@ -27,8 +28,6 @@ namespace GenshinFishingBot
             get => _outputDescription.DesktopBounds.Bottom;
         }
 
-        public event ScreenCaptured CapturedEvent;
-
         public Direct3DCapture()
             : this(0, 0) { }
 
@@ -37,11 +36,10 @@ namespace GenshinFishingBot
 
         public Direct3DCapture(int whichGraphicsCardAdapter, int whichMonitor)
         {
-            Adapter1 adapter = null;
-            adapter = new Factory1().GetAdapter1(whichGraphicsCardAdapter);
-            _device = new Device(adapter);
-            Output output = adapter.GetOutput(whichMonitor);
-            var output1 = output.QueryInterface<Output1>();
+            _adapter = new Factory1().GetAdapter1(whichGraphicsCardAdapter);
+            _device = new Device(_adapter);
+            Output output = _adapter.GetOutput(whichMonitor);
+            _output1 = output.QueryInterface<Output1>();
             _outputDescription = output.Description;
             _textureDescription = new Texture2DDescription()
             {
@@ -57,27 +55,27 @@ namespace GenshinFishingBot
                 Usage = ResourceUsage.Staging
             };
 
-            _output = output1.DuplicateOutput(_device);
+            _output = _output1.DuplicateOutput(_device);
         }
 
-        public void NextFrame()
+        public Span<byte> NextFrame()
         {
+            Span<byte> bufferOutput;
+
             if (_outputImg == null)
                 _outputImg = new Texture2D(_device, _textureDescription);
 
             Resource desktopResource = null;
             OutputDuplicateFrameInformation frameInfo;
 
-            //Retry until you get the next frame
-            Result result = Result.Pending;
-            while (result != Result.Ok)
+            Result result = Result.Fail;
+            while (result.Failure)
             {
-                result = _output.TryAcquireNextFrame(3, out frameInfo, out desktopResource);
+                result = _output.TryAcquireNextFrame(0, out frameInfo, out desktopResource);
             }
 
-            using (var tempTexture = desktopResource.QueryInterface<Texture2D>())
-                _device.ImmediateContext.CopyResource(tempTexture, _outputImg);
-            desktopResource.Dispose();
+            using (var gpuOutput = desktopResource.QueryInterface<Texture2D>())
+                _device.ImmediateContext.CopyResource(gpuOutput, _outputImg);
 
             var mapSource = _device.ImmediateContext.MapSubresource(_outputImg, 0, MapMode.Read, MapFlags.None);
             var len = _textureDescription.Width * 4 * _textureDescription.Height;
@@ -85,11 +83,13 @@ namespace GenshinFishingBot
             unsafe
             {
                 var sourcePtr = (byte*)mapSource.DataPointer;
-                CapturedEvent(new Span<byte>(sourcePtr, len));
+                bufferOutput = new Span<byte>(sourcePtr, len);
             }
 
-            _device.ImmediateContext.UnmapSubresource(_outputImg, 0);
+            _device.ImmediateContext.UnmapSubresource(_outputImg, 0); 
             _output.ReleaseFrame();
+
+            return bufferOutput;
         }
     }
 }

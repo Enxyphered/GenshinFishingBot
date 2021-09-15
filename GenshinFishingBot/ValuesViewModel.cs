@@ -50,5 +50,17 @@
                 OnPropertyChanged(nameof(Height));
             }
         }
+        private string _perfText;
+        public string PerfText
+        {
+            get => _perfText;
+            set
+            {
+                if (_perfText == value)
+                    return;
+                _perfText = value;
+                OnPropertyChanged(nameof(PerfText));
+            }
+        }
     }
 }

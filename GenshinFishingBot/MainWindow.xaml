@@ -6,11 +6,12 @@
         xmlns:local="clr-namespace:GenshinFishingBot"
         mc:Ignorable="d"
         Loaded="Win_Loaded"
-        Title="Genshin Fishing Bot" Height="250" Width="1200">
+        Title="Genshin Fishing Bot" Height="185" Width="645">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Image Name="img" />
@@ -59,5 +60,6 @@
                 <TextBox Text="{Binding Height}"/>
             </DockPanel>
         </Grid>
+        <TextBlock Text="{Binding PerfText}" Grid.Row="3" Grid.ColumnSpan="3"/>
     </Grid>
 </Window>
